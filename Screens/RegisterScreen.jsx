@@ -1,22 +1,15 @@
-import { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { View, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { PlusIcon } from "../components/icons/PlusIcon";
 import { AuthTitle } from "../components/AuthTitle";
 import { Input } from "../components/Input";
 import { ConfirmBtn } from "../components/ConfirmBtn";
 import { Redirect } from "../components/Redirect";
-import { Color, Border, FontFamily, FontSize } from "../styles/globalStyles";
 import { Password } from "../components/Password";
+import useKeyboardVisibility from "../hooks/useKeyboardVisibility";
+import { Color, Border } from "../styles/globalStyles";
 
 export const RegisterScreen = () => {
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
 
   return (
     <View style={styles.container}>
@@ -27,7 +20,12 @@ export const RegisterScreen = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
       >
-        <View style={styles.inputContainer}>
+        <View
+          style={{
+            ...styles.inputContainer,
+            marginBottom: isKeyboardVisible ? 100 : 43,
+          }}
+        >
           <Input placeholder="Логін" />
           <Input placeholder="Адреса електронної пошти" />
           <Password />
@@ -42,7 +40,6 @@ export const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     position: "relative",
-    height: "70%",
     paddingHorizontal: 16,
     paddingTop: 92,
     paddingBottom: 74,
@@ -69,6 +66,5 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     rowGap: 16,
-    marginBottom: 43,
   },
 });

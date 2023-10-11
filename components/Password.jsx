@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Input } from "./Input";
 import { Color, FontFamily, FontSize } from "../styles/globalStyles";
 
-export const Password = ({ onFocus }) => {
+export const Password = () => {
   return (
     <View style={styles.passwordContainer}>
       <Input placeholder="Пароль" />

@@ -3,7 +3,7 @@ import { ImageBackground, StyleSheet, View } from "react-native";
 import { useFonts } from "expo-font";
 import BgImg from "./assets/images/background.jpg";
 import { RegisterScreen } from "./Screens/RegisterScreen";
-import { LoginScreen } from "./screens/LoginScreen";
+import { LoginScreen } from "./Screens/LoginScreen";
 
 export default function App() {
   const [fontsLoaded, error] = useFonts({
@@ -19,8 +19,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       <ImageBackground source={BgImg} style={styles.bgImage}>
-        {/* <RegisterScreen /> */}
-        <LoginScreen />
+        <RegisterScreen />
+        {/* <LoginScreen /> */}
       </ImageBackground>
       <StatusBar style="auto" />
     </View>

@@ -18,7 +18,7 @@ export const RegisterScreen = () => {
       </View>
       <AuthTitle title="Реєстрація" />
       <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View
           style={{

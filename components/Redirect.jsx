@@ -5,7 +5,9 @@ export const Redirect = ({ firstPart = "", secondPart = "" }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.redirectText}>{firstPart}</Text>
-      <Text style={styles.redirectText}>{secondPart}</Text>
+      <Text style={{ ...styles.redirectText, textDecorationLine: "underline" }}>
+        {secondPart}
+      </Text>
     </View>
   );
 };

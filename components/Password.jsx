@@ -5,7 +5,7 @@ import { Color, FontFamily, FontSize } from "../styles/globalStyles";
 export const Password = () => {
   return (
     <View style={styles.passwordContainer}>
-      <Input placeholder="Пароль" />
+      <Input placeholder="Пароль" secured={true} />
       <Pressable style={styles.showBtn}>
         <Text style={styles.showBtnTitle}>Показати</Text>
       </Pressable>

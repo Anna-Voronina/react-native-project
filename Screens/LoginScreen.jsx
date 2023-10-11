@@ -1,4 +1,4 @@
-import { StyleSheet, View, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import { Input } from "../components/Input";
 import { ConfirmBtn } from "../components/ConfirmBtn";
 import { Redirect } from "../components/Redirect";
@@ -14,7 +14,7 @@ export const LoginScreen = () => {
     <View style={styles.container}>
       <AuthTitle title="Увійти" />
       <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View
           style={{

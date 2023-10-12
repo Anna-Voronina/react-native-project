@@ -3,12 +3,17 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Input } from "./Input";
 import { Color, FontFamily, FontSize } from "../styles/globalStyles";
 
-export const Password = () => {
+export const Password = ({ onChangeText, value = "" }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
     <View style={styles.passwordContainer}>
-      <Input placeholder="Пароль" secured={!isPasswordVisible} />
+      <Input
+        placeholder="Пароль"
+        secured={!isPasswordVisible}
+        onChangeText={onChangeText}
+        value={value}
+      />
       <Pressable
         style={styles.showBtn}
         onPress={() => setIsPasswordVisible(!isPasswordVisible)}

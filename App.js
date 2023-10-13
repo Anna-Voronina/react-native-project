@@ -11,7 +11,7 @@ export default function App() {
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
   });
 
-  const routing = defineRoute(null);
+  const routing = defineRoute(true);
 
   if (!fontsLoaded && !error) {
     return null;

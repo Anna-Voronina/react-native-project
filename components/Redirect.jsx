@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Color, FontFamily, FontSize } from "../styles/globalStyles";
 
@@ -12,12 +12,16 @@ export const Redirect = ({
   return (
     <View style={styles.container}>
       <Text style={styles.redirectText}>{firstPart}</Text>
-      <Text
+      <TouchableOpacity
         onPress={() => navigation.navigate(navigateTo)}
-        style={{ ...styles.redirectText, textDecorationLine: "underline" }}
+        activeOpacity={0.5}
       >
-        {secondPart}
-      </Text>
+        <Text
+          style={{ ...styles.redirectText, textDecorationLine: "underline" }}
+        >
+          {secondPart}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

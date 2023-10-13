@@ -6,6 +6,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { PlusIcon } from "../../components/icons/PlusIcon";
 import { AuthTitle } from "../../components/AuthTitle";
@@ -23,6 +24,7 @@ export const RegisterScreen = () => {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
 
   const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
 
@@ -32,6 +34,7 @@ export const RegisterScreen = () => {
     setLogin("");
     setEmail("");
     setPassword("");
+    navigation.navigate("Home");
   };
 
   return (

@@ -6,6 +6,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Input } from "../../components/Input";
 import { ConfirmBtn } from "../../components/ConfirmBtn";
@@ -21,6 +22,7 @@ import { Border, Color } from "../../styles/globalStyles";
 export const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
 
   const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
 
@@ -29,6 +31,7 @@ export const LoginScreen = () => {
     console.log(data);
     setEmail("");
     setPassword("");
+    navigation.navigate("Home");
   };
 
   return (

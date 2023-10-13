@@ -7,17 +7,17 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
-import { PlusIcon } from "../components/icons/PlusIcon";
-import { AuthTitle } from "../components/AuthTitle";
-import { Input } from "../components/Input";
-import { ConfirmBtn } from "../components/ConfirmBtn";
-import { Redirect } from "../components/Redirect";
-import { Password } from "../components/Password";
-import useKeyboardVisibility from "../hooks/useKeyboardVisibility";
-import { Background } from "../components/Background";
-import { handleCloseKeyboard } from "../utils/handleCloseKeyboard";
+import { PlusIcon } from "../../components/icons/PlusIcon";
+import { AuthTitle } from "../../components/AuthTitle";
+import { Input } from "../../components/Input";
+import { ConfirmBtn } from "../../components/ConfirmBtn";
+import { Redirect } from "../../components/Redirect";
+import { Password } from "../../components/Password";
+import useKeyboardVisibility from "../../hooks/useKeyboardVisibility";
+import { Background } from "../../components/Background";
+import { handleCloseKeyboard } from "../../utils/handleCloseKeyboard";
 
-import { Color, Border } from "../styles/globalStyles";
+import { Color, Border } from "../../styles/globalStyles";
 
 export const RegisterScreen = () => {
   const [login, setLogin] = useState("");
@@ -65,7 +65,11 @@ export const RegisterScreen = () => {
             </View>
           </KeyboardAvoidingView>
           <ConfirmBtn title="Зареєстуватися" onPress={handleSubmit} />
-          <Redirect firstPart="Вже є акаунт?" secondPart="Увійти" />
+          <Redirect
+            firstPart="Вже є акаунт?"
+            secondPart="Увійти"
+            navigateTo="Login"
+          />
         </View>
       </TouchableWithoutFeedback>
     </Background>

@@ -17,6 +17,7 @@ export const FontSize = {
 /* Colors */
 export const Color = {
   white: "#ffffff",
+  transparentWhite: "#ffffff4c",
   dark: "#212121",
   blue: "#1b4371",
   lightGray: "#F6F6F6",

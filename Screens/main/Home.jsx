@@ -1,3 +1,5 @@
+import { TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
@@ -11,6 +13,8 @@ import { Color, FontFamily, FontSize } from "../../styles/globalStyles";
 const MainTabs = createBottomTabNavigator();
 
 export const Home = () => {
+  const navigation = useNavigation();
+
   return (
     <MainTabs.Navigator
       initialRouteName="Posts"
@@ -56,6 +60,17 @@ export const Home = () => {
             borderRadius: 20,
             backgroundColor: Color.orange,
           },
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 16 }}
+              activeOpacity={0.5}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <Feather name="arrow-left" size={24} color={Color.fogGray} />
+            </TouchableOpacity>
+          ),
         }}
       />
       <MainTabs.Screen

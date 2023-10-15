@@ -32,8 +32,6 @@ export const CommentsScreen = () => {
   const navigation = useNavigation();
   const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
 
-  console.log(isFocused);
-
   useEffect(() => {
     if (route.params) {
       setPhotoUri(route.params.photoUri);

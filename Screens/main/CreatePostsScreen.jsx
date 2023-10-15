@@ -16,7 +16,7 @@ import { Border, Color, FontFamily, FontSize } from "../../styles/globalStyles";
 
 export const CreatePostsScreen = () => {
   const [camera, setCamera] = useState(null);
-  const [photo, setPhoto] = useState(null);
+  const [photoUri, setPhotoUri] = useState(null);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState(CameraType.back);
@@ -33,16 +33,20 @@ export const CreatePostsScreen = () => {
     })();
   }, []);
 
-  const isNotDisabled = photo && title && location;
+  const isNotDisabled = photoUri && title && location;
 
   const takePicture = async () => {
+    if (photoUri) {
+      setPhotoUri(null);
+      return;
+    }
     const photo = await camera.takePictureAsync();
-    setPhoto(photo.uri);
+    setPhotoUri(photo.uri);
     console.log(photo.uri);
   };
 
   const handleDelete = () => {
-    setPhoto(null);
+    setPhotoUri(null);
     setTitle("");
     setLocation("");
     navigation.navigate("PostsDefault");
@@ -65,29 +69,37 @@ export const CreatePostsScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
-        {photo ? (
-          <Image source={{ uri: photo.uri }} style={styles.image} />
+        {photoUri ? (
+          <Image source={{ uri: photoUri }} style={styles.image} />
         ) : (
           <Camera style={styles.camera} ref={setCamera}></Camera>
         )}
         <TouchableOpacity
           style={{
             ...styles.btnContainer,
-            backgroundColor: photo ? Color.transparentWhite : Color.white,
+            backgroundColor: photoUri ? Color.transparentWhite : Color.white,
           }}
           activeOpacity={0.5}
           onPress={takePicture}
         >
-          <MaterialCommunityIcons
-            name="camera"
-            size={24}
-            color={photo ? Color.white : Color.darkGray}
-          />
+          {photoUri ? (
+            <MaterialCommunityIcons
+              name="camera-retake"
+              size={24}
+              color={Color.white}
+            />
+          ) : (
+            <MaterialCommunityIcons
+              name="camera"
+              size={24}
+              color={Color.darkGray}
+            />
+          )}
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.downloadBtn} activeOpacity={0.5}>
         <Text style={styles.downloadText}>
-          {photo ? "Редагувати фото" : "Завантажте фото"}
+          {photoUri ? "Редагувати фото" : "Завантажте фото"}
         </Text>
       </TouchableOpacity>
       <View style={styles.inputsWrapper}>
@@ -162,7 +174,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Color.gray,
     borderRadius: Border.xs,
-    // overflow: "hidden",
+    overflow: "hidden",
     marginBottom: 8,
     // backgroundColor: Color.lightGray,
   },
@@ -183,10 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   image: {
-    width: 200,
-    height: 230,
-    borderWidth: 1,
-    borderColor: Color.orange,
+    height: 240,
   },
   downloadBtn: {
     marginBottom: 32,

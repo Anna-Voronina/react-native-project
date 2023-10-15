@@ -20,20 +20,25 @@ export const CreatePostsScreen = () => {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState(CameraType.back);
+  const [hasPermission, setHasPermission] = useState(null);
 
   const navigation = useNavigation();
 
-  const [permission, requestPermission] = Camera.useCameraPermissions();
-  const [permissionResponse, setPermission] = MediaLibrary.usePermissions();
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
 
-  console.log(permissionResponse);
+      setHasPermission(status === "granted");
+    })();
+  }, []);
 
   const isNotDisabled = photo && title && location;
 
   const takePicture = async () => {
     const photo = await camera.takePictureAsync();
     setPhoto(photo.uri);
-    console.log(photo);
+    console.log(photo.uri);
   };
 
   const handleDelete = () => {
@@ -49,11 +54,11 @@ export const CreatePostsScreen = () => {
     );
   };
 
-  if (!permission && !permissionResponse) {
+  if (hasPermission === null) {
     return <View />;
   }
 
-  if (!permission.granted && !permissionResponse.granted) {
+  if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
 
@@ -157,9 +162,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Color.gray,
     borderRadius: Border.xs,
-    overflow: "hidden",
+    // overflow: "hidden",
     marginBottom: 8,
-    backgroundColor: Color.lightGray,
+    // backgroundColor: Color.lightGray,
   },
   camera: {
     height: 240,
@@ -176,10 +181,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 50,
-    backgroundColor: Color.white,
   },
   image: {
-    height: 240,
+    width: 200,
+    height: 230,
+    borderWidth: 1,
+    borderColor: Color.orange,
   },
   downloadBtn: {
     marginBottom: 32,

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -33,6 +34,30 @@ export const CreatePostsScreen = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    if (photoUri) {
+      (async () => {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          console.log("Permission to access location was denied");
+          return;
+        }
+
+        const location = await Location.getCurrentPositionAsync({});
+        const coords = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+        const [address] = await Location.reverseGeocodeAsync(coords);
+
+        if (!address) return;
+
+        const fullLocation = `${address.city}, ${address.region}, ${address.country}`;
+        setLocation(fullLocation);
+      })();
+    }
+  }, [photoUri]);
+
   const isNotDisabled = photoUri && title && location;
 
   const takePicture = async () => {
@@ -42,7 +67,6 @@ export const CreatePostsScreen = () => {
     }
     const photo = await camera.takePictureAsync();
     setPhotoUri(photo.uri);
-    console.log(photo.uri);
   };
 
   const handleDelete = () => {

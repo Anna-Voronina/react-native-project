@@ -17,6 +17,7 @@ export const Home = () => {
 
   return (
     <MainTabs.Navigator
+      id="home"
       initialRouteName="Posts"
       screenOptions={{
         tabBarShowLabel: false,

@@ -1,7 +1,18 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import { useRoute } from "@react-navigation/native";
 
 export const MapScreen = () => {
+  const [location, setLocation] = useState(null);
+  const route = useRoute();
+
+  useEffect(() => {
+    if (route.params) {
+      setLocation(route.params.locationCoords);
+    }
+  }, [route.params]);
+
   return (
     <View style={styles.container}>
       <MapView
@@ -12,7 +23,7 @@ export const MapScreen = () => {
           longitudeDelta: 0.0421,
         }}
       >
-        <Marker title="I am here" coordinate={location} description="Hello" />
+        <Marker title="Post location" coordinate={location} />
       </MapView>
     </View>
   );

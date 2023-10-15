@@ -20,6 +20,7 @@ export const CreatePostsScreen = () => {
   const [photoUri, setPhotoUri] = useState(null);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
+  const [locationCoords, setLocationCoords] = useState(null);
   const [type, setType] = useState(CameraType.back);
   const [hasPermission, setHasPermission] = useState(null);
 
@@ -48,6 +49,8 @@ export const CreatePostsScreen = () => {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         };
+        setLocationCoords(coords);
+
         const [address] = await Location.reverseGeocodeAsync(coords);
 
         if (!address) return;
@@ -67,6 +70,16 @@ export const CreatePostsScreen = () => {
     }
     const photo = await camera.takePictureAsync();
     setPhotoUri(photo.uri);
+  };
+
+  const handlePost = () => {
+    const data = {
+      photoUri,
+      title,
+      location,
+      locationCoords,
+    };
+    navigation.navigate("PostsDefault", data);
   };
 
   const handleDelete = () => {
@@ -162,6 +175,7 @@ export const CreatePostsScreen = () => {
           }}
           activeOpacity={0.5}
           disabled={isNotDisabled ? false : true}
+          onPress={handlePost}
         >
           <Text
             style={{

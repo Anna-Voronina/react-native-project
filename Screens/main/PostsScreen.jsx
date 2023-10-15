@@ -33,8 +33,20 @@ export const PostsScreen = () => {
           ),
         }}
       />
-      <PostsScreen.Screen name="Comments" component={CommentsScreen} />
-      <PostsScreen.Screen name="Map" component={MapScreen} />
+      <PostsScreen.Screen
+        name="Comments"
+        component={CommentsScreen}
+        options={{
+          title: "Коментарі",
+        }}
+      />
+      <PostsScreen.Screen
+        name="Map"
+        component={MapScreen}
+        options={{
+          title: "Мапа",
+        }}
+      />
     </PostsScreen.Navigator>
   );
 };

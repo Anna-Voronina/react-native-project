@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -7,7 +7,8 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import { Camera } from "expo-camera";
+import { Camera, CameraType } from "expo-camera";
+import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -18,7 +19,14 @@ export const CreatePostsScreen = () => {
   const [photo, setPhoto] = useState(null);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
+  const [type, setType] = useState(CameraType.back);
+
   const navigation = useNavigation();
+
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [permissionResponse, setPermission] = MediaLibrary.usePermissions();
+
+  console.log(permissionResponse);
 
   const isNotDisabled = photo && title && location;
 
@@ -35,11 +43,25 @@ export const CreatePostsScreen = () => {
     navigation.navigate("PostsDefault");
   };
 
+  const handleToggleCamera = () => {
+    setType((prev) =>
+      prev === CameraType.back ? CameraType.front : CameraType.back
+    );
+  };
+
+  if (!permission && !permissionResponse) {
+    return <View />;
+  }
+
+  if (!permission.granted && !permissionResponse.granted) {
+    return <Text>No access to camera</Text>;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
         {photo ? (
-          <Image source={{ uri: photo.uri }} />
+          <Image source={{ uri: photo.uri }} style={styles.image} />
         ) : (
           <Camera style={styles.camera} ref={setCamera}></Camera>
         )}
@@ -155,6 +177,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 50,
     backgroundColor: Color.white,
+  },
+  image: {
+    height: 240,
   },
   downloadBtn: {
     marginBottom: 32,

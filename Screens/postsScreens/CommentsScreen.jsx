@@ -32,6 +32,8 @@ export const CommentsScreen = () => {
   const navigation = useNavigation();
   const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
 
+  console.log(isFocused);
+
   useEffect(() => {
     if (route.params) {
       setPhotoUri(route.params.photoUri);
@@ -43,8 +45,12 @@ export const CommentsScreen = () => {
       navigation?.getParent("home")?.setOptions({
         tabBarStyle: { display: "none" },
       });
+    } else {
+      navigation?.getParent("home")?.setOptions({
+        tabBarStyle: { position: "absolute", height: 70 },
+      });
     }
-  }, []);
+  }, [isFocused]);
 
   return (
     <TouchableWithoutFeedback onPress={handleCloseKeyboard}>

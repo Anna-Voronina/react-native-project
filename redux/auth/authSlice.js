@@ -5,6 +5,7 @@ const initialState = {
   user: {
     id: null,
     name: null,
+    email: null,
   },
   stateChange: null,
 };
@@ -14,7 +15,8 @@ const authSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(signUpThunk.fulfilled, (state, { payload }) => {
-      state.user = payload;
+      console.log(payload);
+      state.user = payload.user;
     });
   },
 });

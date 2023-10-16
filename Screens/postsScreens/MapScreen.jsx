@@ -19,8 +19,8 @@ export const MapScreen = () => {
         style={styles.map}
         region={{
           ...location,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.007,
         }}
       >
         <Marker title="Post location" coordinate={location} />

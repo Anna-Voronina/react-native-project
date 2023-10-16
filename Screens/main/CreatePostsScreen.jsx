@@ -30,6 +30,12 @@ export const CreatePostsScreen = () => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
+      const location = await Location.requestForegroundPermissionsAsync();
+
+      // if (status !== "granted") {
+      //   console.log("Permission to access location was denied");
+      //   return;
+      // }
 
       setHasPermission(status === "granted");
     })();
@@ -38,12 +44,6 @@ export const CreatePostsScreen = () => {
   useEffect(() => {
     if (photoUri) {
       (async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          console.log("Permission to access location was denied");
-          return;
-        }
-
         const location = await Location.getCurrentPositionAsync({});
         const coords = {
           latitude: location.coords.latitude,
@@ -72,6 +72,12 @@ export const CreatePostsScreen = () => {
     setPhotoUri(photo.uri);
   };
 
+  const handleReset = () => {
+    setPhotoUri(null);
+    setTitle("");
+    setLocation("");
+  };
+
   const handlePost = () => {
     const data = {
       photoUri,
@@ -80,12 +86,11 @@ export const CreatePostsScreen = () => {
       locationCoords,
     };
     navigation.navigate("PostsDefault", data);
+    handleReset();
   };
 
   const handleDelete = () => {
-    setPhotoUri(null);
-    setTitle("");
-    setLocation("");
+    handleReset();
     navigation.navigate("PostsDefault");
   };
 

@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 
 import { PlusIcon } from "../../components/icons/PlusIcon";
 import { AuthTitle } from "../../components/AuthTitle";
@@ -19,19 +20,22 @@ import { Background } from "../../components/Background";
 import { handleCloseKeyboard } from "../../utils/handleCloseKeyboard";
 
 import { Color, Border } from "../../styles/globalStyles";
+import { signUpThunk } from "../../redux/auth/authOperations";
 
 export const RegisterScreen = () => {
-  const [login, setLogin] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
+  const dispatch = useDispatch();
+
   const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
 
   const handleSubmit = () => {
-    const data = { login, email, password };
-    console.log(data);
-    setLogin("");
+    const data = { name, email, password };
+    dispatch(signUpThunk(data));
+    setName("");
     setEmail("");
     setPassword("");
     navigation.navigate("Home");
@@ -54,11 +58,7 @@ export const RegisterScreen = () => {
                 marginBottom: isKeyboardVisible ? 100 : 43,
               }}
             >
-              <Input
-                placeholder="Логін"
-                value={login}
-                onChangeText={setLogin}
-              />
+              <Input placeholder="Логін" value={name} onChangeText={setName} />
               <Input
                 placeholder="Адреса електронної пошти"
                 value={email}

@@ -1,8 +1,11 @@
 import "react-native-gesture-handler";
+import { Text } from "react-native";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import { useFonts } from "expo-font";
-import { NavigationContainer } from "@react-navigation/native";
 
-import { defineRoute } from "./utils/router";
+import { persistor, store } from "./redux/store";
+import { AppNavigation } from "./components/AppNavigation";
 
 export default function App() {
   const [fontsLoaded, error] = useFonts({
@@ -11,11 +14,15 @@ export default function App() {
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
   });
 
-  const routing = defineRoute(true);
-
   if (!fontsLoaded && !error) {
     return null;
   }
 
-  return <NavigationContainer>{routing}</NavigationContainer>;
+  return (
+    <Provider store={store}>
+      <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+        <AppNavigation />
+      </PersistGate>
+    </Provider>
+  );
 }

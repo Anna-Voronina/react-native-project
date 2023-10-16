@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
@@ -13,6 +14,7 @@ import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import { handleCloseKeyboard } from "../../utils/handleCloseKeyboard";
 import { Border, Color, FontFamily, FontSize } from "../../styles/globalStyles";
 
 export const CreatePostsScreen = () => {
@@ -109,97 +111,99 @@ export const CreatePostsScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.cameraContainer}>
-        {photoUri ? (
-          <Image source={{ uri: photoUri }} style={styles.image} />
-        ) : (
-          <Camera style={styles.camera} ref={setCamera}></Camera>
-        )}
-        <TouchableOpacity
-          style={{
-            ...styles.btnContainer,
-            backgroundColor: photoUri ? Color.transparentWhite : Color.white,
-          }}
-          activeOpacity={0.5}
-          onPress={takePicture}
-        >
+    <TouchableWithoutFeedback onPress={handleCloseKeyboard}>
+      <View style={styles.container}>
+        <View style={styles.cameraContainer}>
           {photoUri ? (
-            <MaterialCommunityIcons
-              name="camera-retake"
-              size={24}
-              color={Color.white}
-            />
+            <Image source={{ uri: photoUri }} style={styles.image} />
           ) : (
-            <MaterialCommunityIcons
-              name="camera"
-              size={24}
-              color={Color.darkGray}
-            />
+            <Camera style={styles.camera} ref={setCamera}></Camera>
           )}
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity style={styles.downloadBtn} activeOpacity={0.5}>
-        <Text style={styles.downloadText}>
-          {photoUri ? "Редагувати фото" : "Завантажте фото"}
-        </Text>
-      </TouchableOpacity>
-      <View style={styles.inputsWrapper}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Назва..."
-            placeholderTextColor={Color.darkGray}
-            style={styles.input}
-            value={title}
-            onChangeText={setTitle}
-          />
-        </View>
-        <View
-          style={{
-            ...styles.inputContainer,
-            flexDirection: "row",
-            gap: 4,
-            alignItems: "center",
-          }}
-        >
-          <Feather name="map-pin" size={24} color={Color.darkGray} />
-          <TextInput
-            placeholder="Місцевість..."
-            placeholderTextColor={Color.darkGray}
-            style={styles.input}
-            value={location}
-            onChangeText={setLocation}
-          />
-        </View>
-      </View>
-      <View style={styles.bottomWrapper}>
-        <TouchableOpacity
-          style={{
-            ...styles.postBtn,
-            backgroundColor: isNotDisabled ? Color.orange : Color.lightGray,
-          }}
-          activeOpacity={0.5}
-          disabled={isNotDisabled ? false : true}
-          onPress={handlePost}
-        >
-          <Text
+          <TouchableOpacity
             style={{
-              ...styles.postText,
-              color: isNotDisabled ? Color.white : Color.darkGray,
+              ...styles.btnContainer,
+              backgroundColor: photoUri ? Color.transparentWhite : Color.white,
             }}
+            activeOpacity={0.5}
+            onPress={takePicture}
           >
-            Опубліковати
+            {photoUri ? (
+              <MaterialCommunityIcons
+                name="camera-retake"
+                size={24}
+                color={Color.white}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                name="camera"
+                size={24}
+                color={Color.darkGray}
+              />
+            )}
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.downloadBtn} activeOpacity={0.5}>
+          <Text style={styles.downloadText}>
+            {photoUri ? "Редагувати фото" : "Завантажте фото"}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.trashBtn}
-          activeOpacity={0.5}
-          onPress={handleDelete}
-        >
-          <Feather name="trash-2" size={24} color={Color.darkGray} />
-        </TouchableOpacity>
+        <View style={styles.inputsWrapper}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Назва..."
+              placeholderTextColor={Color.darkGray}
+              style={styles.input}
+              value={title}
+              onChangeText={setTitle}
+            />
+          </View>
+          <View
+            style={{
+              ...styles.inputContainer,
+              flexDirection: "row",
+              gap: 4,
+              alignItems: "center",
+            }}
+          >
+            <Feather name="map-pin" size={24} color={Color.darkGray} />
+            <TextInput
+              placeholder="Місцевість..."
+              placeholderTextColor={Color.darkGray}
+              style={styles.input}
+              value={location}
+              onChangeText={setLocation}
+            />
+          </View>
+        </View>
+        <View style={styles.bottomWrapper}>
+          <TouchableOpacity
+            style={{
+              ...styles.postBtn,
+              backgroundColor: isNotDisabled ? Color.orange : Color.lightGray,
+            }}
+            activeOpacity={0.5}
+            disabled={isNotDisabled ? false : true}
+            onPress={handlePost}
+          >
+            <Text
+              style={{
+                ...styles.postText,
+                color: isNotDisabled ? Color.white : Color.darkGray,
+              }}
+            >
+              Опубліковати
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.trashBtn}
+            activeOpacity={0.5}
+            onPress={handleDelete}
+          >
+            <Feather name="trash-2" size={24} color={Color.darkGray} />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -219,7 +223,6 @@ const styles = StyleSheet.create({
     borderRadius: Border.xs,
     overflow: "hidden",
     marginBottom: 8,
-    // backgroundColor: Color.lightGray,
   },
   camera: {
     height: 240,

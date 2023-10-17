@@ -4,12 +4,12 @@ import { useNavigation } from "@react-navigation/native";
 import { Border, Color, FontFamily, FontSize } from "../styles/globalStyles";
 
 export const PostItem = ({ post }) => {
-  const { photoUri, location, title, locationCoords } = post;
+  const { id, imageUrl, location, title, locationCoords, userId, date } = post;
 
   const navigation = useNavigation();
 
   const handleCommentsClick = () => {
-    navigation.navigate("Comments", { photoUri });
+    navigation.navigate("Comments", { id, imageUrl });
   };
 
   const handleLocation = () => {
@@ -18,7 +18,7 @@ export const PostItem = ({ post }) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={{ uri: photoUri }} />
+      <Image style={styles.image} source={{ uri: imageUrl }} />
       <Text style={styles.title}>{title}</Text>
       <View style={styles.descriptionContainer}>
         <TouchableOpacity

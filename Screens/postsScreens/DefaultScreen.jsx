@@ -1,24 +1,30 @@
 import { useEffect, useState } from "react";
-import { useRoute } from "@react-navigation/native";
 import { View, FlatList, StyleSheet } from "react-native";
+import { collection, onSnapshot } from "firebase/firestore";
+
 import { PostItem } from "../../components/PostItem";
 import { Color } from "../../styles/globalStyles";
+import { db } from "../../firebase/config";
 
 export const DefaultScreen = () => {
   const [posts, setPosts] = useState([]);
-  const route = useRoute();
 
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
+    (async () => {
+      onSnapshot(collection(db, "posts"), (doc) => {
+        const allPosts = doc.docs
+          .map((post) => ({ ...post.data(), id: post.id }))
+          .sort((a, b) => b.date - a.date);
+        setPosts(allPosts);
+      });
+    })();
+  }, []);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={posts}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => <PostItem post={item} />}
       />
     </View>

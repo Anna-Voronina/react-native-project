@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Text,
   View,
@@ -12,9 +13,14 @@ import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
+import { addDoc, collection } from "firebase/firestore";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+
+import { selectUser } from "../../redux/auth/authSelectors";
+import { db } from "../../firebase/config";
 import { handleCloseKeyboard } from "../../utils/handleCloseKeyboard";
+import { uploadImageToServer } from "../../utils/uploadImageToServer";
 import { Border, Color, FontFamily, FontSize } from "../../styles/globalStyles";
 
 export const CreatePostsScreen = () => {
@@ -25,6 +31,8 @@ export const CreatePostsScreen = () => {
   const [locationCoords, setLocationCoords] = useState(null);
   const [type, setType] = useState(CameraType.back);
   const [hasPermission, setHasPermission] = useState(null);
+
+  const user = useSelector(selectUser);
 
   const navigation = useNavigation();
 
@@ -80,14 +88,24 @@ export const CreatePostsScreen = () => {
     setLocation("");
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
+    const imageUrl = await uploadImageToServer({
+      imageUri: photoUri,
+      folder: "postImages",
+    });
+
     const data = {
-      photoUri,
+      imageUrl,
       title,
       location,
       locationCoords,
+      userId: user.id,
+      date: Date.now(),
     };
-    navigation.navigate("PostsDefault", data);
+
+    await addDoc(collection(db, "posts"), data);
+
+    navigation.navigate("PostsDefault");
     handleReset();
   };
 

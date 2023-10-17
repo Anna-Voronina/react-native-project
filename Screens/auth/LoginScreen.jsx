@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 
 import { Input } from "../../components/Input";
 import { ConfirmBtn } from "../../components/ConfirmBtn";
@@ -18,20 +19,26 @@ import useKeyboardVisibility from "../../hooks/useKeyboardVisibility";
 import { handleCloseKeyboard } from "../../utils/handleCloseKeyboard";
 
 import { Border, Color } from "../../styles/globalStyles";
+import { signInThunk } from "../../redux/auth/authOperations";
 
 export const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
 
   const handleSubmit = () => {
     const data = { email, password };
-    console.log(data);
-    setEmail("");
-    setPassword("");
-    navigation.navigate("Home");
+    dispatch(signInThunk(data))
+      .unwrap()
+      .then(() => {
+        setEmail("");
+        setPassword("");
+        navigation.navigate("Home");
+      });
   };
 
   return (

@@ -21,14 +21,13 @@ export const defineRoute = (isAuth) => {
             component={RegisterScreen}
             options={{ headerShown: false }}
           />
-          <MainStack.Screen
-            name="Home"
-            component={Home}
-            options={{ headerShown: false }}
-          />
         </>
       ) : (
-        <></>
+        <MainStack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
       )}
     </MainStack.Navigator>
   );

@@ -1,24 +1,46 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { signUpThunk } from "./authOperations";
+import { createSlice, isAnyOf } from "@reduxjs/toolkit";
+import {
+  refreshStateChangedThunk,
+  signInThunk,
+  signOutThunk,
+  signUpThunk,
+} from "./authOperations";
 
 const initialState = {
   user: {
     id: null,
     name: null,
     email: null,
+    avatar: null,
   },
-  stateChange: null,
+  stateChanged: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  extraReducers: (builder) => {
-    builder.addCase(signUpThunk.fulfilled, (state, { payload }) => {
-      console.log(payload);
+  reducers: {
+    refreshUser: (state, { payload }) => {
       state.user = payload.user;
-    });
+      state.stateChanged = payload.stateChanged;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(signOutThunk.fulfilled, (state) => {
+        state.user = initialState.user;
+        state.stateChanged = initialState.stateChanged;
+      })
+      .addMatcher(
+        isAnyOf(signUpThunk.fulfilled, signInThunk.fulfilled),
+        (state, { payload }) => {
+          state.user = payload.user;
+          state.stateChanged = true;
+        }
+      );
   },
 });
 
 export const authReducer = authSlice.reducer;
+
+export const { refreshUser } = authSlice.actions;

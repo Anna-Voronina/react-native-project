@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
+  TouchableOpacity,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { nanoid } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
+import * as ImagePicker from "expo-image-picker";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
-import { PlusIcon } from "../../components/icons/PlusIcon";
 import { AuthTitle } from "../../components/AuthTitle";
 import { Input } from "../../components/Input";
 import { ConfirmBtn } from "../../components/ConfirmBtn";
@@ -19,26 +24,88 @@ import useKeyboardVisibility from "../../hooks/useKeyboardVisibility";
 import { Background } from "../../components/Background";
 import { handleCloseKeyboard } from "../../utils/handleCloseKeyboard";
 
-import { Color, Border } from "../../styles/globalStyles";
 import { signUpThunk } from "../../redux/auth/authOperations";
+import { storage } from "../../firebase/config";
+import { Color, Border } from "../../styles/globalStyles";
 
 export const RegisterScreen = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState(null);
   const navigation = useNavigation();
+
+  console.log(avatar);
 
   const dispatch = useDispatch();
 
   const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
 
-  const handleSubmit = () => {
-    const data = { name, email, password };
-    dispatch(signUpThunk(data));
-    setName("");
-    setEmail("");
-    setPassword("");
-    navigation.navigate("Home");
+  useEffect(() => {
+    (async () => {
+      const mediaPermission =
+        await ImagePicker.getMediaLibraryPermissionsAsync();
+
+      if (mediaPermission.status !== "granted") {
+        console.log("No access to media library");
+      }
+    })();
+  }, []);
+
+  const handleAvatarLoad = async () => {
+    // if (avatar) {
+    //   setAvatar(null);
+    //   return;
+    // }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setAvatar(result.assets[0].uri);
+    }
+  };
+
+  const uploadImageToServer = async (imageUri) => {
+    const uniqueAvatarId = nanoid();
+
+    if (imageUri) {
+      try {
+        const response = await fetch(imageUri);
+
+        const file = await response.blob();
+
+        const imageRef = await ref(storage, `avatars/${uniqueAvatarId}`);
+
+        await uploadBytes(imageRef, file);
+
+        const downloadURL = await getDownloadURL(imageRef);
+
+        return downloadURL;
+      } catch (error) {
+        console.warn("uploadImageToServer: ", error);
+      }
+    }
+  };
+
+  const handleSubmit = async () => {
+    const photo = avatar
+      ? await uploadImageToServer(avatar)
+      : "https://shorturl.at/agwJW";
+
+    const data = { name, email, password, photo };
+    dispatch(signUpThunk(data))
+      .unwrap()
+      .then(() => {
+        setName("");
+        setEmail("");
+        setPassword("");
+        navigation.navigate("Home");
+      });
   };
 
   return (
@@ -46,7 +113,19 @@ export const RegisterScreen = () => {
       <TouchableWithoutFeedback onPress={handleCloseKeyboard}>
         <View style={styles.container}>
           <View style={styles.imageContainer}>
-            <PlusIcon styles={styles.icon} />
+            <Image style={styles.image} source={{ uri: avatar }} />
+            <TouchableOpacity
+              style={styles.addBtn}
+              activeOpacity={0.5}
+              onPress={handleAvatarLoad}
+            >
+              <SimpleLineIcons
+                name="plus"
+                size={24}
+                color={Color.orange}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
           </View>
           <AuthTitle title="Реєстрація" />
           <KeyboardAvoidingView
@@ -96,6 +175,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
     top: -60,
     left: "50%",
     transform: [{ translateX: -50 }],
@@ -104,10 +185,16 @@ const styles = StyleSheet.create({
     borderRadius: Border.s,
     backgroundColor: Color.lightGray,
   },
-  icon: {
+  image: {
+    width: 120,
+    height: 120,
+  },
+  addBtn: {
     position: "absolute",
     bottom: 14,
     right: -13,
+  },
+  icon: {
     backgroundColor: Color.white,
     borderRadius: 50,
   },

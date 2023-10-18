@@ -33,8 +33,6 @@ export const RegisterScreen = () => {
   const [avatar, setAvatar] = useState(null);
   const navigation = useNavigation();
 
-  console.log(avatar);
-
   const dispatch = useDispatch();
 
   const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
@@ -51,12 +49,7 @@ export const RegisterScreen = () => {
   }, []);
 
   const handleAvatarLoad = async () => {
-    // if (avatar) {
-    //   setAvatar(null);
-    //   return;
-    // }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 4],
@@ -95,12 +88,21 @@ export const RegisterScreen = () => {
               activeOpacity={0.5}
               onPress={handleAvatarLoad}
             >
-              <SimpleLineIcons
-                name="plus"
-                size={24}
-                color={Color.orange}
-                style={styles.icon}
-              />
+              {avatar ? (
+                <SimpleLineIcons
+                  name="close"
+                  size={25}
+                  color={Color.gray}
+                  style={styles.icon}
+                />
+              ) : (
+                <SimpleLineIcons
+                  name="plus"
+                  size={24}
+                  color={Color.orange}
+                  style={styles.icon}
+                />
+              )}
             </TouchableOpacity>
           </View>
           <AuthTitle title="Реєстрація" />
@@ -164,6 +166,7 @@ const styles = StyleSheet.create({
   image: {
     width: 120,
     height: 120,
+    borderRadius: Border.s,
   },
   addBtn: {
     position: "absolute",

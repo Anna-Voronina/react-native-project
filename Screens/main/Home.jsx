@@ -1,5 +1,6 @@
+import { useCallback, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
@@ -13,7 +14,22 @@ import { Color, FontFamily, FontSize } from "../../styles/globalStyles";
 const MainTabs = createBottomTabNavigator();
 
 export const Home = () => {
+  const [isProfileActive, setIsProfileActive] = useState(false);
+
   const navigation = useNavigation();
+
+  const ProfileScreenWrapper = () => {
+    useFocusEffect(
+      useCallback(() => {
+        setIsProfileActive(true);
+        return () => {
+          setIsProfileActive(false);
+        };
+      }, [])
+    );
+
+    return <ProfileScreen />;
+  };
 
   return (
     <MainTabs.Navigator
@@ -48,45 +64,91 @@ export const Home = () => {
           ),
         }}
       />
-      <MainTabs.Screen
-        name="Create"
-        component={CreatePostsScreen}
-        options={{
-          tabBarStyle: { display: "none" },
-          title: "Створити публікацію",
-          tabBarIcon: () => (
-            <Fontisto name="plus-a" size={18} color={Color.white} />
-          ),
-          tabBarItemStyle: {
-            alignSelf: "center",
-            height: 40,
-            maxWidth: 70,
-            borderRadius: 20,
-            backgroundColor: Color.orange,
-          },
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 16 }}
-              activeOpacity={0.5}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Feather name="arrow-left" size={24} color={Color.fogGray} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <MainTabs.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: () => (
-            <Feather name="user" size={24} color={Color.fogGray} />
-          ),
-        }}
-      />
+      {isProfileActive ? (
+        <>
+          <MainTabs.Screen
+            name="Profile"
+            component={ProfileScreenWrapper}
+            options={{
+              headerShown: false,
+              tabBarIcon: () => (
+                <Feather name="user" size={24} color={Color.white} />
+              ),
+              tabBarItemStyle: {
+                alignSelf: "center",
+                height: 40,
+                maxWidth: 70,
+                borderRadius: 20,
+                backgroundColor: Color.orange,
+              },
+            }}
+          />
+          <MainTabs.Screen
+            name="Create"
+            component={CreatePostsScreen}
+            options={{
+              tabBarStyle: { display: "none" },
+              title: "Створити публікацію",
+              tabBarIcon: () => (
+                <Fontisto name="plus-a" size={18} color={Color.fogGray} />
+              ),
+              headerLeft: () => (
+                <TouchableOpacity
+                  style={{ marginLeft: 16 }}
+                  activeOpacity={0.5}
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                >
+                  <Feather name="arrow-left" size={24} color={Color.fogGray} />
+                </TouchableOpacity>
+              ),
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <MainTabs.Screen
+            name="Create"
+            component={CreatePostsScreen}
+            options={{
+              tabBarStyle: { display: "none" },
+              title: "Створити публікацію",
+              tabBarIcon: () => (
+                <Fontisto name="plus-a" size={18} color={Color.white} />
+              ),
+              tabBarItemStyle: {
+                alignSelf: "center",
+                height: 40,
+                maxWidth: 70,
+                borderRadius: 20,
+                backgroundColor: Color.orange,
+              },
+              headerLeft: () => (
+                <TouchableOpacity
+                  style={{ marginLeft: 16 }}
+                  activeOpacity={0.5}
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                >
+                  <Feather name="arrow-left" size={24} color={Color.fogGray} />
+                </TouchableOpacity>
+              ),
+            }}
+          />
+          <MainTabs.Screen
+            name="Profile"
+            component={ProfileScreenWrapper}
+            options={{
+              headerShown: false,
+              tabBarIcon: () => (
+                <Feather name="user" size={24} color={Color.fogGray} />
+              ),
+            }}
+          />
+        </>
+      )}
     </MainTabs.Navigator>
   );
 };

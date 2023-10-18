@@ -1,36 +1,21 @@
-import { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useSelector } from "react-redux";
-import { Feather, FontAwesome5, FontAwesome } from "@expo/vector-icons";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
-
+import { FontAwesome5, FontAwesome, Feather } from "@expo/vector-icons";
 import { useGetComments } from "../hooks/useGetComments";
-import { Border, Color, FontFamily, FontSize } from "../styles/globalStyles";
-import { selectUser } from "../redux/auth/authSelectors";
-import { db } from "../firebase/config";
 import { useGetLikes } from "../hooks/useGetLikes";
+import { Border, Color, FontFamily, FontSize } from "../styles/globalStyles";
 
-export const PostItem = ({ post }) => {
+export const UserPostItem = ({ post }) => {
   const { id, imageUrl, location, title, locationCoords, userId, date } = post;
 
-  const navigation = useNavigation();
-  const user = useSelector(selectUser);
   const [allComments] = useGetComments(id);
   const [allLikes] = useGetLikes(id);
 
+  const navigation = useNavigation();
+
   const commentsNumber = allComments.length;
   const likesNumber = allLikes.length;
-  const userLike = allLikes.find((like) => like.userId === user.id);
+  const country = location.split(", ")[2];
 
   const handleCommentsClick = () => {
     navigation.navigate("Comments", { id, imageUrl });
@@ -38,20 +23,6 @@ export const PostItem = ({ post }) => {
 
   const handleLocation = () => {
     navigation.navigate("Map", { locationCoords });
-  };
-
-  const toggleLike = async () => {
-    if (userLike) {
-      const docRef = doc(db, "posts", id, "likes", userLike.id);
-      await deleteDoc(docRef);
-    } else {
-      const docRef = doc(db, "posts", id);
-      await addDoc(collection(docRef, "likes"), {
-        userId: user.id,
-        userName: user.name,
-        userEmail: user.email,
-      });
-    }
   };
 
   return (
@@ -93,15 +64,11 @@ export const PostItem = ({ post }) => {
               {commentsNumber}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={toggleLike}
-            style={styles.commentsBtn}
-          >
+          <TouchableOpacity style={styles.commentsBtn} activeOpacity={0.5}>
             <Feather
               name="thumbs-up"
               size={24}
-              color={userLike ? Color.orange : Color.darkGray}
+              color={likesNumber ? Color.orange : Color.darkGray}
             />
             <Text
               style={{
@@ -119,7 +86,8 @@ export const PostItem = ({ post }) => {
           onPress={handleLocation}
         >
           <Feather name="map-pin" size={24} color={Color.darkGray} />
-          <Text style={styles.locationTitle}>{location}</Text>
+
+          <Text style={styles.locationTitle}>{country}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -148,7 +116,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 16,
+    gap: 24,
   },
   commentsBtn: {
     flexDirection: "row",
@@ -160,7 +128,6 @@ const styles = StyleSheet.create({
     fontSize: FontSize.m,
   },
   locationBtn: {
-    maxWidth: 230,
     flexDirection: "row",
     alignItems: "center",
     gap: 4,

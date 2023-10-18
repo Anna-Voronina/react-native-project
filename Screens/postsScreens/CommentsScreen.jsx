@@ -22,42 +22,29 @@ import useKeyboardVisibility from "../../hooks/useKeyboardVisibility.js";
 import { handleCloseKeyboard } from "../../utils/handleCloseKeyboard.js";
 import { db } from "../../firebase/config.js";
 import { selectUser } from "../../redux/auth/authSelectors.js";
+import { CommentItem } from "../../components/CommentItem.jsx";
+import { useGetComments } from "../../hooks/useGetComments.js";
 import {
   Border,
   Color,
   FontFamily,
   FontSize,
 } from "../../styles/globalStyles.js";
-import { CommentItem } from "../../components/CommentItem.jsx";
 
 export const CommentsScreen = () => {
   const [photoUrl, setPhotoUrl] = useState("");
   const [comment, setComment] = useState("");
-  const [allComments, setAllComments] = useState([]);
 
   const route = useRoute();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
 
+  const [allComments] = useGetComments(route.params.id);
   const user = useSelector(selectUser);
 
   const [isKeyboardVisible, setIsKeyboardVisible] = useKeyboardVisibility();
 
   useEffect(() => {
-    (async () => {
-      const docRef = doc(db, "posts", route.params.id);
-      onSnapshot(collection(docRef, "comments"), (doc) => {
-        const comments = doc.docs
-          .map((comment) => ({
-            ...comment.data(),
-            id: comment.id,
-          }))
-          .sort((a, b) => a.date - b.date);
-
-        setAllComments(comments);
-      });
-    })();
-
     if (route.params) {
       setPhotoUrl(route.params.imageUrl);
     }

@@ -135,7 +135,7 @@ export const ProfileScreen = () => {
             activeOpacity={0.5}
             onPress={handleNavigate}
           >
-            <Text style={styles.addText}>Add your first post</Text>
+            <Text style={styles.addText}>Додайте перший пост</Text>
             <MaterialCommunityIcons
               name="file-image-plus"
               size={50}

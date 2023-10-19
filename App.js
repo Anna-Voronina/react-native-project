@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import { Text } from "react-native";
+import { StatusBar, Text } from "react-native";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { useFonts } from "expo-font";
@@ -21,6 +21,11 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+        <StatusBar
+          animated={true}
+          barStyle="dark-content"
+          backgroundColor="#fff"
+        />
         <AppNavigation />
       </PersistGate>
     </Provider>

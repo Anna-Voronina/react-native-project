@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Alert,
   FlatList,
   Image,
   StyleSheet,
@@ -57,7 +58,9 @@ export const ProfileScreen = () => {
   }, []);
 
   const handleSignOut = () => {
-    dispatch(signOutThunk());
+    dispatch(signOutThunk())
+      .unwrap()
+      .catch((error) => Alert.alert("Помилка виходу з акаунту", error));
   };
 
   const handleUpdateAvatar = async () => {

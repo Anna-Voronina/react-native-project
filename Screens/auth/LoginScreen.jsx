@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
@@ -38,7 +39,8 @@ export const LoginScreen = () => {
         setEmail("");
         setPassword("");
         navigation.navigate("Home");
-      });
+      })
+      .catch((error) => Alert.alert("Помилка логінізації", error));
   };
 
   return (
